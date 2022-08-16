@@ -1,0 +1,7 @@
+# hexo robots.txt
+User-agent: *
+Allow: /
+
+Sitemap: https://wuhaolam.github.io/sitemap.xml
+Sitemap: https://wuhaolam.github.io/baidusitemap.xml
+
