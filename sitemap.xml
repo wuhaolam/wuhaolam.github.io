@@ -2,6 +2,33 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>https://wuhaolam.github.io/archives/8b87eef8.html</loc>
+    
+    <lastmod>2022-08-21</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://wuhaolam.github.io/archives/bd60744f.html</loc>
+    
+    <lastmod>2022-08-21</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://wuhaolam.github.io/categories/index.html</loc>
+    
+    <lastmod>2022-08-17</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
     <loc>https://wuhaolam.github.io/archives/c31ae19.html</loc>
     
     <lastmod>2022-08-16</lastmod>
@@ -37,23 +64,21 @@
     <priority>0.6</priority>
   </url>
   
-  <url>
-    <loc>https://wuhaolam.github.io/categories/index.html</loc>
-    
-    <lastmod>2022-08-13</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
 
   <url>
     <loc>https://wuhaolam.github.io/</loc>
-    <lastmod>2022-08-16</lastmod>
+    <lastmod>2022-08-21</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
   </url>
 
+  
+  <url>
+    <loc>https://wuhaolam.github.io/tags/Linux/</loc>
+    <lastmod>2022-08-21</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
   
 
   
