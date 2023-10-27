@@ -2,6 +2,15 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>https://wuhaolam.github.io/archives/c4840132.html</loc>
+    
+    <lastmod>2023-10-27</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
     <loc>https://wuhaolam.github.io/archives/e5c65ccf.html</loc>
     
     <lastmod>2023-10-27</lastmod>
@@ -59,15 +68,6 @@
     <loc>https://wuhaolam.github.io/archives/d66ab648.html</loc>
     
     <lastmod>2023-08-09</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://wuhaolam.github.io/archives/c4840132.html</loc>
-    
-    <lastmod>2023-08-07</lastmod>
     
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
@@ -254,6 +254,27 @@
 
   
   <url>
+    <loc>https://wuhaolam.github.io/tags/Linux%E5%9F%BA%E7%A1%80/</loc>
+    <lastmod>2023-10-27</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://wuhaolam.github.io/tags/MySQL/</loc>
+    <lastmod>2023-10-27</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://wuhaolam.github.io/tags/Shell%E8%84%9A%E6%9C%AC/</loc>
+    <lastmod>2023-10-27</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
     <loc>https://wuhaolam.github.io/tags/ansible-playbook/</loc>
     <lastmod>2023-10-27</lastmod>
     <changefreq>weekly</changefreq>
@@ -268,34 +289,6 @@
   </url>
   
   <url>
-    <loc>https://wuhaolam.github.io/tags/MySQL/</loc>
-    <lastmod>2023-10-27</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>https://wuhaolam.github.io/tags/Linux%E5%9F%BA%E7%A1%80/</loc>
-    <lastmod>2023-10-27</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>https://wuhaolam.github.io/tags/Shell%E8%84%9A%E6%9C%AC/</loc>
-    <lastmod>2023-10-27</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>https://wuhaolam.github.io/tags/%E7%BD%91%E7%AB%99%E9%83%A8%E7%BD%B2/</loc>
-    <lastmod>2023-10-27</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
     <loc>https://wuhaolam.github.io/tags/shell%E8%84%9A%E6%9C%AC%E6%A1%88%E4%BE%8B%E5%AE%9E%E6%88%98/</loc>
     <lastmod>2023-10-27</lastmod>
     <changefreq>weekly</changefreq>
@@ -303,7 +296,7 @@
   </url>
   
   <url>
-    <loc>https://wuhaolam.github.io/tags/shell-%E8%84%9A%E6%9C%AC%E6%A1%88%E4%BE%8B%E5%AE%9E%E6%88%98/</loc>
+    <loc>https://wuhaolam.github.io/tags/%E7%BD%91%E7%AB%99%E9%83%A8%E7%BD%B2/</loc>
     <lastmod>2023-10-27</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
@@ -319,7 +312,7 @@
 
   
   <url>
-    <loc>https://wuhaolam.github.io/categories/Ansible/</loc>
+    <loc>https://wuhaolam.github.io/categories/Linux%E5%9F%BA%E7%A1%80/</loc>
     <lastmod>2023-10-27</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
@@ -333,13 +326,6 @@
   </url>
   
   <url>
-    <loc>https://wuhaolam.github.io/categories/Linux%E5%9F%BA%E7%A1%80/</loc>
-    <lastmod>2023-10-27</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
     <loc>https://wuhaolam.github.io/categories/Shell%E8%84%9A%E6%9C%AC/</loc>
     <lastmod>2023-10-27</lastmod>
     <changefreq>weekly</changefreq>
@@ -347,7 +333,7 @@
   </url>
   
   <url>
-    <loc>https://wuhaolam.github.io/categories/%E7%BD%91%E7%AB%99%E9%83%A8%E7%BD%B2/</loc>
+    <loc>https://wuhaolam.github.io/categories/Ansible/</loc>
     <lastmod>2023-10-27</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
@@ -361,7 +347,7 @@
   </url>
   
   <url>
-    <loc>https://wuhaolam.github.io/categories/shell-%E8%84%9A%E6%9C%AC%E6%A1%88%E4%BE%8B%E5%AE%9E%E6%88%98/</loc>
+    <loc>https://wuhaolam.github.io/categories/%E7%BD%91%E7%AB%99%E9%83%A8%E7%BD%B2/</loc>
     <lastmod>2023-10-27</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
