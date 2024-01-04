@@ -2,6 +2,15 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>https://wuhaolam.github.io/archives/e5c65ccf.html</loc>
+    
+    <lastmod>2024-01-04</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
     <loc>https://wuhaolam.github.io/archives/99c33715.html</loc>
     
     <lastmod>2023-12-31</lastmod>
@@ -84,15 +93,6 @@
   
   <url>
     <loc>https://wuhaolam.github.io/archives/c4840132.html</loc>
-    
-    <lastmod>2023-10-27</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://wuhaolam.github.io/archives/e5c65ccf.html</loc>
     
     <lastmod>2023-10-27</lastmod>
     
@@ -299,13 +299,6 @@
 
   
   <url>
-    <loc>https://wuhaolam.github.io/tags/ansible-playbook/</loc>
-    <lastmod>2024-01-04</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
     <loc>https://wuhaolam.github.io/tags/Dockerfile/</loc>
     <lastmod>2024-01-04</lastmod>
     <changefreq>weekly</changefreq>
@@ -313,14 +306,7 @@
   </url>
   
   <url>
-    <loc>https://wuhaolam.github.io/tags/Ansible-playbook/</loc>
-    <lastmod>2024-01-04</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>https://wuhaolam.github.io/tags/Linux%E5%9F%BA%E7%A1%80/</loc>
+    <loc>https://wuhaolam.github.io/tags/ansible-playbook/</loc>
     <lastmod>2024-01-04</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
@@ -328,6 +314,13 @@
   
   <url>
     <loc>https://wuhaolam.github.io/tags/Docker%E5%92%8CContainerd/</loc>
+    <lastmod>2024-01-04</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://wuhaolam.github.io/tags/Linux%E5%9F%BA%E7%A1%80/</loc>
     <lastmod>2024-01-04</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
@@ -364,13 +357,6 @@
 
   
   <url>
-    <loc>https://wuhaolam.github.io/categories/Ansible/</loc>
-    <lastmod>2024-01-04</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
     <loc>https://wuhaolam.github.io/categories/Docker%E5%92%8CContainerd/</loc>
     <lastmod>2024-01-04</lastmod>
     <changefreq>weekly</changefreq>
@@ -378,7 +364,7 @@
   </url>
   
   <url>
-    <loc>https://wuhaolam.github.io/categories/Linux%E5%9F%BA%E7%A1%80/</loc>
+    <loc>https://wuhaolam.github.io/categories/Ansible/</loc>
     <lastmod>2024-01-04</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
@@ -386,6 +372,13 @@
   
   <url>
     <loc>https://wuhaolam.github.io/categories/Kubernetes/</loc>
+    <lastmod>2024-01-04</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://wuhaolam.github.io/categories/Linux%E5%9F%BA%E7%A1%80/</loc>
     <lastmod>2024-01-04</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
