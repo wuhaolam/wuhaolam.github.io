@@ -306,6 +306,13 @@
   </url>
   
   <url>
+    <loc>https://wuhaolam.github.io/tags/Docker%E5%92%8CContainerd/</loc>
+    <lastmod>2024-01-11</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
     <loc>https://wuhaolam.github.io/tags/Dockerfile/</loc>
     <lastmod>2024-01-11</lastmod>
     <changefreq>weekly</changefreq>
@@ -321,13 +328,6 @@
   
   <url>
     <loc>https://wuhaolam.github.io/tags/MySQL/</loc>
-    <lastmod>2024-01-11</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>https://wuhaolam.github.io/tags/Docker%E5%92%8CContainerd/</loc>
     <lastmod>2024-01-11</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
@@ -364,6 +364,13 @@
   </url>
   
   <url>
+    <loc>https://wuhaolam.github.io/categories/Kubernetes/</loc>
+    <lastmod>2024-01-11</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
     <loc>https://wuhaolam.github.io/categories/Docker%E5%92%8CContainerd/</loc>
     <lastmod>2024-01-11</lastmod>
     <changefreq>weekly</changefreq>
@@ -379,13 +386,6 @@
   
   <url>
     <loc>https://wuhaolam.github.io/categories/%E6%95%B0%E6%8D%AE%E5%BA%93%E6%9C%8D%E5%8A%A1/</loc>
-    <lastmod>2024-01-11</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>https://wuhaolam.github.io/categories/Kubernetes/</loc>
     <lastmod>2024-01-11</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
