@@ -1,0 +1,520 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"><title>使用 kubeasz 部署高可用 k8s 集群 | 穿着草鞋前往</title><meta name="author" content="Wu Hao"><meta name="copyright" content="Wu Hao"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="使用 kubeasz 工具快速部署 k8s 集群"><link rel="shortcut icon" href="/img/image.jpg"><link rel="canonical" href="https://wuhaolam.github.io/archives/f0df75e4.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><meta name="baidu-site-verification" content="code-sPKc2fWStl"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/node-snackbar/dist/snackbar.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"/search.xml","preload":false,"languages":{"hits_empty":"找不到您查询的内容：${query}"}},
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":300},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: true,
+    post: true
+  },
+  runtime: '',
+  date_suffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: {"chs_to_cht":"你已切换为繁体","cht_to_chs":"你已切换为简体","day_to_night":"你已切换为深色模式","night_to_day":"你已切换为浅色模式","bgLight":"#49b1f5","bgDark":"#1f1f1f","position":"bottom-left"},
+  source: {
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  }
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '使用 kubeasz 部署高可用 k8s 集群',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2024-03-11 16:56:30'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+    win.getCSS = url => new Promise((resolve, reject) => {
+      const link = document.createElement('link')
+      link.rel = 'stylesheet'
+      link.href = url
+      link.onload = () => resolve()
+      link.onerror = () => reject()
+      document.head.appendChild(link)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const detectApple = () => {
+      if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><link rel="stylesheet" href="/css/style.css"><meta name="generator" content="Hexo 5.4.2"></head><body><div id="web_bg"></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="https://cdn.jsdelivr.net/gh/wuhaolam/picgo_demo/img/%E5%A4%B4%E5%83%8F.jpg" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">31</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">9</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">8</div></a></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);" rel="external nofollow noreferrer"><i class="fa-fw fa fa-heartbeat"></i><span> 清单</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/music/"><i class="fa-fw fas fa-music"></i><span> 音乐</span></a></li><li><a class="site-page child" href="/Gallery/"><i class="fa-fw fas fa-images"></i><span> 照片</span></a></li><li><a class="site-page child" href="/movies/"><i class="fa-fw fas fa-video"></i><span> 电影</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('https://cdn.jsdelivr.net/gh/wuhaolam/picgo_demo/img/kubeasz.png')"><nav id="nav"><span id="blog-info"><a href="/" title="穿着草鞋前往"><span class="site-name">穿着草鞋前往</span></a></span><div id="menus"><div id="search-button"><a class="site-page social-icon search" href="javascript:void(0);" rel="external nofollow noreferrer"><i class="fas fa-search fa-fw"></i><span> 搜索</span></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);" rel="external nofollow noreferrer"><i class="fa-fw fa fa-heartbeat"></i><span> 清单</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/music/"><i class="fa-fw fas fa-music"></i><span> 音乐</span></a></li><li><a class="site-page child" href="/Gallery/"><i class="fa-fw fas fa-images"></i><span> 照片</span></a></li><li><a class="site-page child" href="/movies/"><i class="fa-fw fas fa-video"></i><span> 电影</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div><div id="toggle-menu"><a class="site-page" href="javascript:void(0);" rel="external nofollow noreferrer"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">使用 kubeasz 部署高可用 k8s 集群</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2023-12-28T01:22:00.000Z" title="发表于 2023-12-28 09:22:00">2023-12-28</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2024-03-11T08:56:30.848Z" title="更新于 2024-03-11 16:56:30">2024-03-11</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/Kubernetes/">Kubernetes</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="使用 kubeasz 部署高可用 k8s 集群"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h1 id="一、kubeasz-部署高可用-k8s-集群"><a href="#一、kubeasz-部署高可用-k8s-集群" class="headerlink" title="一、kubeasz 部署高可用 k8s 集群"></a>一、kubeasz 部署高可用 k8s 集群</h1><p>官方网址：<code>https://github.com/easzlab/kubeasz</code></p>
+<p><strong>kubeasz</strong> 致力于提供快速部署高可用<code>k8s</code>集群的工具, 同时也努力成为<code>k8s</code>实践、使用的参考书；基于二进制方式部署和利用 <code>ansible-playbook</code> 实现自动化；既提供一键安装脚本, 也可以根据安装指南分步执行安装各个组件。</p>
+<img src="D:\Documents\TyporaPicture\基于 kubeasz 部署高可用 kubernetes\image-20230810231009451.png" alt="image-20230810231009451" style="zoom: 80%;" />
+
+<h2 id="1-1-k8s-集群信息"><a href="#1-1-k8s-集群信息" class="headerlink" title="1.1 k8s 集群信息"></a>1.1 k8s 集群信息</h2><table>
+<thead>
+<tr>
+<th align="center">主机类型</th>
+<th align="center">服务器IP</th>
+<th align="center">主机名</th>
+<th align="center">VIP</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">K8S-master1</td>
+<td align="center">10.243.20.230</td>
+<td align="center">k8s-master1-230</td>
+<td align="center">10.243.20.250</td>
+</tr>
+<tr>
+<td align="center">K8S-Master2</td>
+<td align="center">10.243.20.231</td>
+<td align="center">k8s-master2-231</td>
+<td align="center">10.243.20.250</td>
+</tr>
+<tr>
+<td align="center">K8S-Master3</td>
+<td align="center">10.243.20.232</td>
+<td align="center">k8s-master3-232</td>
+<td align="center">10.243.20.250</td>
+</tr>
+<tr>
+<td align="center">Harbor1</td>
+<td align="center">10.243.20.233</td>
+<td align="center">k8s-harbor1-233</td>
+<td align="center"></td>
+</tr>
+<tr>
+<td align="center">Harbor2</td>
+<td align="center">10.243.20.234</td>
+<td align="center">k8s-harbor2-234</td>
+<td align="center"></td>
+</tr>
+<tr>
+<td align="center">etcd1</td>
+<td align="center">10.243.20.235</td>
+<td align="center">k8s-etcd1-235</td>
+<td align="center"></td>
+</tr>
+<tr>
+<td align="center">etcd2</td>
+<td align="center">10.243.20.236</td>
+<td align="center">k8s-etcd2-236</td>
+<td align="center"></td>
+</tr>
+<tr>
+<td align="center">etcd3</td>
+<td align="center">10.243.20.237</td>
+<td align="center">k8s-etcd3-237</td>
+<td align="center"></td>
+</tr>
+<tr>
+<td align="center">Haproxy1+keepalived</td>
+<td align="center">10.243.20.238</td>
+<td align="center">k8s-ha1-238</td>
+<td align="center"></td>
+</tr>
+<tr>
+<td align="center">Haproxy2+keepalived</td>
+<td align="center">10.243.20.239</td>
+<td align="center">k8s-ha2-deploy-239</td>
+<td align="center">K8S 部署节点</td>
+</tr>
+<tr>
+<td align="center">Node1</td>
+<td align="center">10.243.20.240</td>
+<td align="center">k8s-node1-240</td>
+<td align="center"></td>
+</tr>
+<tr>
+<td align="center">Node2</td>
+<td align="center">10.243.20.241</td>
+<td align="center">k8s-node2-241</td>
+<td align="center"></td>
+</tr>
+<tr>
+<td align="center">Node3</td>
+<td align="center">10.243.20.242</td>
+<td align="center">k8s-node3-242</td>
+<td align="center"></td>
+</tr>
+</tbody></table>
+<h2 id="1-2-k8s-集群环境准备"><a href="#1-2-k8s-集群环境准备" class="headerlink" title="1.2 k8s 集群环境准备"></a>1.2 k8s 集群环境准备</h2><h3 id="1-2-1-软件清单"><a href="#1-2-1-软件清单" class="headerlink" title="1.2.1 软件清单"></a>1.2.1 软件清单</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">OS version: Ubuntu 22.04.2 LTS</span><br><span class="line">keepalived version: Keepalived v2.2.4 (08/21,2021)</span><br><span class="line">HAProxy version 2.4.22</span><br><span class="line">k8s version: 1.27.2</span><br><span class="line">Docker version 20.10.24, build 297e128</span><br><span class="line">containerd github.com/containerd/containerd v1.6.20 2806fc1057397dbaeefbea0e4e17bddfbd388f38</span><br><span class="line">nerdctl version 1.4.0</span><br><span class="line">harbor version: v2.8.2</span><br><span class="line">CoreDNS version: v1.10.1</span><br><span class="line">calico version: v3.26.1</span><br></pre></td></tr></table></figure>
+
+<h3 id="1-2-2-相关参数初始化"><a href="#1-2-2-相关参数初始化" class="headerlink" title="1.2.2 相关参数初始化"></a>1.2.2 相关参数初始化</h3><p>系统内核优化</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cat</span> &gt;&gt; /etc/security/limits.conf &lt;&lt; <span class="string">EOF </span></span><br><span class="line"><span class="string">*             soft    core            unlimited</span></span><br><span class="line"><span class="string">*             hard    core            unlimited</span></span><br><span class="line"><span class="string">*       soft    nproc           1000000</span></span><br><span class="line"><span class="string">*             hard    nproc           1000000</span></span><br><span class="line"><span class="string">*             soft    nofile          1000000</span></span><br><span class="line"><span class="string">*             hard    nofile          1000000</span></span><br><span class="line"><span class="string">*             soft    memlock         32000</span></span><br><span class="line"><span class="string">*             hard    memlock         32000</span></span><br><span class="line"><span class="string">*             soft    msgqueue        8192000</span></span><br><span class="line"><span class="string">*             hard    msgqueue        8192000</span></span><br><span class="line"><span class="string">EOF</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="built_in">cat</span> &gt;&gt; /etc/sysctl.conf &lt;&lt; <span class="string">EOF</span></span><br><span class="line"><span class="string">net.ipv4.ip_forward=1</span></span><br><span class="line"><span class="string">vm.max_map_count=262144</span></span><br><span class="line"><span class="string">kernel.pid_max=4194303</span></span><br><span class="line"><span class="string">fs.file-max=1000000</span></span><br><span class="line"><span class="string">net.ipv4.tcp_max_tw_buckets=6000</span></span><br><span class="line"><span class="string">net.netfilter.nf_conntrack_max=2097152</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">net.bridge.bridge-nf-call-ip6tables = 1</span></span><br><span class="line"><span class="string">net.bridge.bridge-nf-call-iptables = 1</span></span><br><span class="line"><span class="string">vm.swappiness=0</span></span><br><span class="line"><span class="string">EOF</span></span><br><span class="line"></span><br><span class="line">sudo modprobe nf_conntrack</span><br><span class="line">sudo modprobe br_netfilter</span><br><span class="line"></span><br><span class="line">sysctl -p</span><br></pre></td></tr></table></figure>
+
+<p>实验之前确保各节点时区一致、时间同步。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 确保时区一致</span></span><br><span class="line">timedatectl set-timezone Asia/Shanghai</span><br><span class="line"><span class="comment"># 每隔5分钟同步一次时间</span></span><br><span class="line">*/5 * * * * /usr/sbin/ntpdate time1.aliyun.com &amp;&gt; /dev/null &amp;&amp; hwclock -w &amp;&gt; /dev/null</span><br></pre></td></tr></table></figure>
+
+<h2 id="1-3-负载均衡配置"><a href="#1-3-负载均衡配置" class="headerlink" title="1.3 负载均衡配置"></a>1.3 负载均衡配置</h2><h3 id="1-3-1-部署-keepalived"><a href="#1-3-1-部署-keepalived" class="headerlink" title="1.3.1 部署 keepalived"></a>1.3.1 部署 keepalived</h3><p>（1）第一台高可用节点 HA1 部署 keepalived</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">root@k8s-ha1-238:~<span class="comment"># apt -y install keepalived</span></span><br><span class="line">root@k8s-ha1-238:/etc/default<span class="comment"># vim /etc/keepalived/keepalived.conf</span></span><br><span class="line">global_defs &#123;</span><br><span class="line">   router_id LVS_DEVEL1</span><br><span class="line">   &#125;</span><br><span class="line">vrrp_instance VI_1 &#123;</span><br><span class="line">    state BACKUP</span><br><span class="line">    interface ens160</span><br><span class="line">    virtual_router_id 250        <span class="comment"># 同一个虚拟路由器，keepalived节点中，此值必须相同</span></span><br><span class="line">    priority 100</span><br><span class="line">    advert_int 1</span><br><span class="line">    nopreempt                    <span class="comment"># 非抢占</span></span><br><span class="line">    authentication &#123;</span><br><span class="line">        auth_type PASS</span><br><span class="line">        auth_pass 1111</span><br><span class="line">    &#125;</span><br><span class="line">    virtual_ipaddress &#123;</span><br><span class="line">        10.243.20.250 label ens160:1        <span class="comment"># 定义 VIP</span></span><br><span class="line">    &#125;</span><br><span class="line">    unicast_src_ip 10.243.20.238         <span class="comment"># 定义单播通告</span></span><br><span class="line">    unicast_peer &#123;</span><br><span class="line">      10.243.20.239</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">root@k8s-ha1-238:/etc/default<span class="comment"># systemctl restart keepalived.service</span></span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>第二台高可用节点 HA2 部署 keepalived 同理，只需修改部分参数</p>
+<p>global_defs {<br>  router_id LVS_DEVEL2<br>  }</p>
+<p>​    priority 80</p>
+<p>​    unicast_src_ip 10.243.20.239<br>​    unicast_peer {<br>​      10.243.20.238<br>​    }</p>
+</blockquote>
+<h3 id="1-3-2-部署-HAproxy"><a href="#1-3-2-部署-HAproxy" class="headerlink" title="1.3.2 部署 HAproxy"></a>1.3.2 部署 HAproxy</h3><p>（1）在 HA1 上部署 HAproxy 服务，HA2 配置相同</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">root@k8s-ha1-238:~<span class="comment"># apt -y install haproxy</span></span><br><span class="line">root@k8s-ha1-238:~<span class="comment"># vim /etc/haproxy/haproxy.cfg</span></span><br><span class="line">listen k8s-api-6443</span><br><span class="line">  <span class="built_in">bind</span> 10.243.20.250:6443            <span class="comment"># 监听k8s-Master的6443端口</span></span><br><span class="line">  mode tcp</span><br><span class="line">  server 10.243.20.230 10.243.20.230:6443 check inter 3s fall 3 rise 3</span><br><span class="line">  server 10.243.20.231 10.243.20.231:6443 check inter 3s fall 3 rise 3</span><br><span class="line">  server 10.243.20.232 10.243.20.232:6443 check inter 3s fall 3 rise 3</span><br><span class="line">root@k8s-ha1-238:~<span class="comment"># systemctl restart haproxy.service</span></span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>为了保证后续 HAproxy 节点可以正常使用需要开启 “net.ipv4.ip_nonlocal_bind&#x3D;1” </p>
+<p>echo “net.ipv4.ip_nonlocal_bind&#x3D;1” &gt;&gt; &#x2F;etc&#x2F;sysctl.conf<br>sysctl -p</p>
+</blockquote>
+<h2 id="1-4-部署-Harbor"><a href="#1-4-部署-Harbor" class="headerlink" title="1.4 部署 Harbor"></a>1.4 部署 Harbor</h2><h3 id="1-4-1-部署基于-https-的-Harbor-服务"><a href="#1-4-1-部署基于-https-的-Harbor-服务" class="headerlink" title="1.4.1 部署基于 https 的 Harbor 服务"></a>1.4.1 部署基于 https 的 Harbor 服务</h3><p>（1）在 Harbor1 主机上部署 Harbor 服务，Harbor2 主机同理</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 准备 Harbor 安装包</span></span><br><span class="line">root@k8s-harbor1-233:~<span class="comment"># ls</span></span><br><span class="line">harbor-offline-installer-v2.8.2.tgz</span><br><span class="line"></span><br><span class="line">root@k8s-harbor1-233:~<span class="comment"># mkdir /apps</span></span><br><span class="line">root@k8s-harbor1-233:~<span class="comment"># tar xvf harbor-offline-installer-v2.8.2.tgz -C /apps/</span></span><br><span class="line">root@k8s-harbor1-233:~<span class="comment"># cd /apps/harbor/</span></span><br><span class="line">root@k8s-harbor1-233:/apps/harbor<span class="comment"># cp harbor.yml.tmpl harbor.yml</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 编辑配置文件，修改相关选项，不开启harbor的https，后面使用HAproxy做代理实现https的harbor</span></span><br><span class="line">hostname: 10.243.20.233                         <span class="comment"># 修改主机名为本机IP地址</span></span><br><span class="line"><span class="comment">#https:</span></span><br><span class="line">  <span class="comment"># https port for harbor, default is 443</span></span><br><span class="line"><span class="comment">#  port: 443</span></span><br><span class="line">  <span class="comment"># The path of cert and key files for nginx</span></span><br><span class="line"><span class="comment">#  certificate: /apps/harbor/certs/harbor.wuhaolam.top.pem          </span></span><br><span class="line"><span class="comment">#  private_key: /apps/harbor/certs/harbor.wuhaolam.top.key</span></span><br><span class="line">harbor_admin_password: 12345                                          <span class="comment"># admin 登录密码</span></span><br><span class="line">data_volume: /data/harbor/                                            <span class="comment"># 数据卷存放目录</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 开始安装，--with-trivy 是开启安全扫描</span></span><br><span class="line">root@k8s-harbor1-233:/apps/harbor<span class="comment"># ./install.sh --with-trivy</span></span><br></pre></td></tr></table></figure>
+
+<img src="D:\Documents\TyporaPicture\基于 kubeasz 部署高可用 kubernetes\image-20231231101646039.png" alt="image-20231231101646039"  />
+
+<p>（2）配置 Harbor 服务开机自启动</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">root@k8s-harbor1-233:~<span class="comment"># cat /etc/rc.local</span></span><br><span class="line"><span class="comment">#!/bin/bash</span></span><br><span class="line"><span class="built_in">cd</span> /apps/harbor &amp;&amp; /usr/bin/docker-compose up -d</span><br><span class="line">root@k8s-harbor1-233:~<span class="comment"># chmod +x /etc/rc.local</span></span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>Docker22.04 安装见此文章<br><a target="_blank" rel="noopener external nofollow noreferrer" href="https://wuhaolam.top/archives/99c33715.html">https://wuhaolam.top/archives/99c33715.html</a></p>
+<p>harobor 离线安装包下载地址<br><a target="_blank" rel="noopener external nofollow noreferrer" href="https://github.com/goharbor/harbor/releases/download/v2.8.2/harbor-offline-installer-v2.8.2.tgz">https://github.com/goharbor/harbor/releases/download/v2.8.2/harbor-offline-installer-v2.8.2.tgz</a></p>
+<p>后续更改harbor.yml的配置文件，使用如下命令重启服务（在harbor安装目录）</p>
+<ul>
+<li>docker-compose down</li>
+<li>.&#x2F;prepare</li>
+<li>docker-compose up -d</li>
+</ul>
+</blockquote>
+<p>（3）配置 HAproxy https 反向代理至 Harbor 实现高可用</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 准备证书文件</span></span><br><span class="line"><span class="comment">## HAproxy是将私钥文件和服务器证书合并; 而 nginx 是将服务器证书和CA证书合并</span></span><br><span class="line">root@k8s-ha1-238:~<span class="comment"># mkdir /etc/haproxy/certs</span></span><br><span class="line">root@k8s-ha1-238:/etc/haproxy/certs<span class="comment"># ls</span></span><br><span class="line">haproxy.pem  www.wuhaolam.top.key  www.wuhaolam.top.pem</span><br><span class="line"></span><br><span class="line"><span class="comment"># HA1 和 HA2 做相同配置</span></span><br><span class="line">root@k8s-ha1-238:~<span class="comment"># vim /etc/haproxy/haproxy.cfg</span></span><br><span class="line">listen harbor-api-443</span><br><span class="line">  <span class="built_in">bind</span> 10.243.20.250:80</span><br><span class="line">  <span class="built_in">bind</span> 10.243.20.250:443 ssl crt /etc/haproxy/certs/haproxy.pem</span><br><span class="line">  redirect scheme https <span class="keyword">if</span> !&#123; ssl_fc &#125;</span><br><span class="line">  mode http</span><br><span class="line">  balance <span class="built_in">source</span></span><br><span class="line">  option forwardfor</span><br><span class="line">  server 10.243.20.233 10.243.20.233:80 check inter 3s fall 3 rise 3</span><br><span class="line">  server 10.243.20.234 10.243.20.234:80 check inter 3s fall 3 rise 3</span><br><span class="line">  </span><br><span class="line">root@k8s-ha1-238:~<span class="comment"># systemctl restart haproxy.service</span></span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<h2 id="使用NGINX做反向代理负载均衡简要配置"><a href="#使用NGINX做反向代理负载均衡简要配置" class="headerlink" title="使用NGINX做反向代理负载均衡简要配置"></a>使用NGINX做反向代理负载均衡简要配置</h2><p>&#x3D;&#x3D;在http语句块中配置&#x3D;&#x3D;</p>
+<p>client_max_body_size 100m; # 允许客户端请求主体的最大大小，可以根据需要调整</p>
+<p>upstream harbor_servers {<br>    hash $remote_addr consistent;<br>    server 192.168.119.112:80 weight&#x3D;1 fail_timeout&#x3D;5s max_fails&#x3D;3;<br>    server 192.168.119.113:80 weight&#x3D;1 fail_timeout&#x3D;5s max_fails&#x3D;3;<br>  }</p>
+<p>server {<br>  listen 80;<br>  listen 443 ssl;<br>  ssl_certificate &#x2F;apps&#x2F;nginx&#x2F;certs&#x2F;harbor.wuhaolam.top.pem;<br>  ssl_certificate_key &#x2F;apps&#x2F;nginx&#x2F;certs&#x2F;harbor.wuhaolam.top.key;<br>  ssl_session_cache shared:sslcache:20m;<br>  ssl_session_timeout 10m;<br>  server_name harbor.wuhaolam.top;<br>  add_header Strict-Transport-Security “max-age&#x3D;31536000; includeSubDomains” always;</p>
+<p>  location &#x2F; {<br>    if ( $scheme &#x3D; http ) {<br>      rewrite &#x2F; <a target="_blank" rel="noopener external nofollow noreferrer" href="https://harbor.wuhaolam.top/">https://harbor.wuhaolam.top</a> permanent;<br>    }<br>    proxy_pass <a target="_blank" rel="noopener external nofollow noreferrer" href="http://harbor_servers/">http://harbor_servers</a>;<br>    proxy_set_header Host $host;<br>    proxy_set_header X-Real-IP $remote_addr;<br>    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;<br>    proxy_set_header X-Forwarded-Proto $scheme;<br>    proxy_read_timeout 300s;<br>  }<br>}</p>
+</blockquote>
+<h3 id="1-4-2-配置-Harbor-之间的镜像复制"><a href="#1-4-2-配置-Harbor-之间的镜像复制" class="headerlink" title="1.4.2 配置 Harbor 之间的镜像复制"></a>1.4.2 配置 Harbor 之间的镜像复制</h3><p>:warning:&#x3D;&#x3D;此节中harbor的镜像复制有些使用了域名，有误；如果没有配置域名则需要替换成IP地址&#x3D;&#x3D;</p>
+<p>（1）在浏览器输入 Harbor 主机的IP地址，然后输入用户名和密码登录 Harbor UI</p>
+<p>![image-20231231160954714](D:\Documents\TyporaPicture\基于 kubeasz 部署高可用 kubernetes\image-20231231160954714.png)</p>
+<p>![image-20231231161056065](D:\Documents\TyporaPicture\基于 kubeasz 部署高可用 kubernetes\image-20231231161056065.png)</p>
+<p>（2）在 Harbor1 节点中，<strong>仓库管理 –&gt; 新建目标</strong>；目标创建完成后，点击确定即可</p>
+<p>![image-20231231161214877](D:\Documents\TyporaPicture\基于 kubeasz 部署高可用 kubernetes\image-20231231161214877.png)</p>
+<p>![image-20231231170156895](D:\Documents\TyporaPicture\基于 kubeasz 部署高可用 kubernetes\image-20231231170156895.png)</p>
+<p>（3）点击 <strong>系统管理 –&gt; 复制管理 –&gt; 新建规则</strong>；</p>
+<p>![image-20231231162641649](D:\Documents\TyporaPicture\基于 kubeasz 部署高可用 kubernetes\image-20231231162641649.png)</p>
+<p>（4）手动复制验证规则</p>
+<p><strong>Harbor1 节点</strong></p>
+<p>![image-20231231163215994](D:\Documents\TyporaPicture\基于 kubeasz 部署高可用 kubernetes\image-20231231163215994.png)</p>
+<p><strong>Harbor2 节点</strong></p>
+<p>![image-20231231163325779](D:\Documents\TyporaPicture\基于 kubeasz 部署高可用 kubernetes\image-20231231163325779.png)</p>
+<p>（5）在 Harbor2 节点创建等同的复制规则</p>
+<p>![image-20231231181158998](D:\Documents\TyporaPicture\基于 kubeasz 部署高可用 kubernetes\image-20231231181158998.png)</p>
+<p>![image-20231231181223789](D:\Documents\TyporaPicture\基于 kubeasz 部署高可用 kubernetes\image-20231231181223789.png)</p>
+<p>（6）推送镜像到 Harbor2 节点，测试是否可以自动推送镜像至 Harbor1节点</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">root@k8s-harbor2-234:/apps/harbor<span class="comment"># docker login harbor2.wuhaolam.top</span></span><br><span class="line">root@k8s-harbor2-234:/apps/harbor<span class="comment"># docker pull nginx</span></span><br><span class="line">root@k8s-harbor2-234:/apps/harbor<span class="comment"># docker tag nginx:latest harbor2.wuhaolam.top/myserver/nginx:v1</span></span><br><span class="line">root@k8s-harbor2-234:/apps/harbor<span class="comment"># docker push harbor2.wuhaolam.top/myserver/nginx:v1</span></span><br></pre></td></tr></table></figure>
+
+<p>![image-20231231182134334](D:\Documents\TyporaPicture\基于 kubeasz 部署高可用 kubernetes\image-20231231182134334.png)</p>
+<p>![image-20231231182335950](D:\Documents\TyporaPicture\基于 kubeasz 部署高可用 kubernetes\image-20231231182335950.png)</p>
+<h2 id="1-5-kubeasz-部署高可用-kubernets"><a href="#1-5-kubeasz-部署高可用-kubernets" class="headerlink" title="1.5 kubeasz 部署高可用 kubernets"></a>1.5 kubeasz 部署高可用 kubernets</h2><h3 id="1-5-1-在部署节点上配置Ansible免密登录至master、node、etcd节点"><a href="#1-5-1-在部署节点上配置Ansible免密登录至master、node、etcd节点" class="headerlink" title="1.5.1 在部署节点上配置Ansible免密登录至master、node、etcd节点"></a>1.5.1 在部署节点上配置Ansible免密登录至master、node、etcd节点</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line">root@k8s-ha2-deploy-239:~<span class="comment"># apt -y install ansible git</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 配置免密登录</span></span><br><span class="line">root@k8s-ha2-deploy-239:~<span class="comment"># cat ssh-key.sh </span></span><br><span class="line"><span class="comment">#!/bin/bash</span></span><br><span class="line">  </span><br><span class="line">IPLIST=<span class="string">&#x27;</span></span><br><span class="line"><span class="string">10.243.20.230</span></span><br><span class="line"><span class="string">10.243.20.231</span></span><br><span class="line"><span class="string">10.243.20.232</span></span><br><span class="line"><span class="string">10.243.20.235</span></span><br><span class="line"><span class="string">10.243.20.236</span></span><br><span class="line"><span class="string">10.243.20.237</span></span><br><span class="line"><span class="string">10.243.20.240</span></span><br><span class="line"><span class="string">10.243.20.241</span></span><br><span class="line"><span class="string">10.243.20.242</span></span><br><span class="line"><span class="string">&#x27;</span></span><br><span class="line">PASSWORD=<span class="string">&#x27;wuhaolam&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> [ ! -e /root/.ssh/id_rsa ];<span class="keyword">then</span></span><br><span class="line">  <span class="built_in">echo</span> -e <span class="string">&quot;\E[1;32m开始生成密钥对...\E[0m&quot;</span></span><br><span class="line">  ssh-keygen -P <span class="string">&quot;&quot;</span> -f /root/.ssh/id_rsa &amp;&gt; /dev/null</span><br><span class="line"><span class="keyword">else</span></span><br><span class="line">  <span class="built_in">echo</span> -e <span class="string">&quot;\E[1;34m密钥对已经存在\E[0m&quot;</span></span><br><span class="line"><span class="keyword">fi</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> ! dpkg -L sshpass &amp;&gt; /dev/null;<span class="keyword">then</span></span><br><span class="line">  apt -y install sshpass &amp;&gt; /dev/null || &#123; <span class="built_in">echo</span> -e <span class="string">&#x27;\E[1;31m&quot;error: sshpass packet install false!&quot;\E[0m&#x27;</span>; <span class="built_in">exit</span>; &#125;</span><br><span class="line"><span class="keyword">fi</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> IP <span class="keyword">in</span> <span class="variable">$IPLIST</span>; <span class="keyword">do</span></span><br><span class="line">  sshpass -p <span class="variable">$PASSWORD</span> ssh-copy-id -o StrictHostKeyChecking=no <span class="variable">$IP</span> &amp;&gt; /dev/null</span><br><span class="line">  <span class="built_in">echo</span> <span class="variable">$IP</span> key_authentication already <span class="keyword">done</span>.</span><br><span class="line"><span class="keyword">done</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">echo</span> -e <span class="string">&quot;\E[1;32msuccessful\E[0m&quot;</span></span><br><span class="line">root@k8s-ha2-deploy-239:~<span class="comment"># bash ssh-key.sh</span></span><br></pre></td></tr></table></figure>
+
+<img src="D:\Documents\TyporaPicture\基于 kubeasz 部署高可用 kubernetes\image-20240101153034767.png" alt="image-20240101153034767" style="zoom:80%;" />
+
+<h3 id="1-5-2-在部署节点下载-kubeasz-项目及其组件"><a href="#1-5-2-在部署节点下载-kubeasz-项目及其组件" class="headerlink" title="1.5.2 在部署节点下载 kubeasz 项目及其组件"></a>1.5.2 在部署节点下载 kubeasz 项目及其组件</h3><p>（1）下载项目源码</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">root@k8s-ha2-deploy-239:~<span class="comment"># wget https://github.com/easzlab/kubeasz/releases/download/3.6.1/ezdown</span></span><br><span class="line">root@k8s-ha2-deploy-239:~<span class="comment"># ls ezdown   # 此文件是一个k8s环境集群的脚本</span></span><br><span class="line">ezdown</span><br><span class="line">root@k8s-ha2-deploy-239:~<span class="comment"># chmod +x ezdown</span></span><br></pre></td></tr></table></figure>
+
+<p>（2）在部署节点安装Docker，不使用 ezdown 脚本安装，自己安装Docker</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">Docker22.04 安装见此文章</span><br><span class="line">https://wuhaolam.top/archives/99c33715.html</span><br><span class="line"></span><br><span class="line">root@k8s-ha2-deploy-239:~<span class="comment"># docker --version</span></span><br><span class="line">Docker version 24.0.2, build cb74dfc</span><br></pre></td></tr></table></figure>
+
+<p>（3）开始下载kubeasz项目及其组件</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line">root@k8s-ha2-deploy-239:~<span class="comment"># ./ezdown -D</span></span><br><span class="line"><span class="comment"># 下载完成</span></span><br><span class="line">root@k8s-ha2-deploy-239:~<span class="comment"># docker images</span></span><br><span class="line">REPOSITORY                                           TAG       IMAGE ID       CREATED         SIZE</span><br><span class="line">easzlab/kubeasz                                      3.6.1     0ae1e2a7c7f0   7 months ago    157MB</span><br><span class="line">easzlab/kubeasz-k8s-bin                              v1.27.2   a9d4ca76c91b   7 months ago    1.12GB</span><br><span class="line">calico/kube-controllers                              v3.24.6   baf4466ddf40   7 months ago    77.5MB</span><br><span class="line">easzlab.io.local:5000/calico/kube-controllers        v3.24.6   baf4466ddf40   7 months ago    77.5MB</span><br><span class="line">easzlab.io.local:5000/calico/cni                     v3.24.6   ca9fea5e07cb   7 months ago    212MB</span><br><span class="line">calico/cni                                           v3.24.6   ca9fea5e07cb   7 months ago    212MB</span><br><span class="line">calico/node                                          v3.24.6   3953a481aa9d   7 months ago    245MB</span><br><span class="line">easzlab.io.local:5000/calico/node                    v3.24.6   3953a481aa9d   7 months ago    245MB</span><br><span class="line">easzlab/kubeasz-ext-bin                              1.7.1     5c1895de99b2   9 months ago    606MB</span><br><span class="line">easzlab/metrics-server                               v0.6.3    1da5af8117da   9 months ago    68.9MB</span><br><span class="line">easzlab.io.local:5000/easzlab/metrics-server         v0.6.3    1da5af8117da   9 months ago    68.9MB</span><br><span class="line">easzlab/k8s-dns-node-cache                           1.22.20   d1157efdd316   10 months ago   67.8MB</span><br><span class="line">easzlab.io.local:5000/easzlab/k8s-dns-node-cache     1.22.20   d1157efdd316   10 months ago   67.8MB</span><br><span class="line">easzlab/pause                                        3.9       78d53e70b442   14 months ago   744kB</span><br><span class="line">easzlab.io.local:5000/easzlab/pause                  3.9       78d53e70b442   14 months ago   744kB</span><br><span class="line">kubernetesui/dashboard                               v2.7.0    07655ddf2eeb   15 months ago   246MB</span><br><span class="line">easzlab.io.local:5000/kubernetesui/dashboard         v2.7.0    07655ddf2eeb   15 months ago   246MB</span><br><span class="line">kubernetesui/metrics-scraper                         v1.0.8    115053965e86   19 months ago   43.8MB</span><br><span class="line">easzlab.io.local:5000/kubernetesui/metrics-scraper   v1.0.8    115053965e86   19 months ago   43.8MB</span><br><span class="line">coredns/coredns                                      1.9.3     5185b96f0bec   19 months ago   48.8MB</span><br><span class="line">easzlab.io.local:5000/coredns/coredns                1.9.3     5185b96f0bec   19 months ago   48.8MB</span><br><span class="line">registry                                             2         b8604a3fe854   2 years ago     26.2MB</span><br><span class="line">root@k8s-ha2-deploy-239:~<span class="comment"># ls /etc/kubeasz/</span></span><br><span class="line">ansible.cfg  bin  docs  down  example  ezctl  ezdown  manifests  pics  playbooks  README.md  roles  tools</span><br></pre></td></tr></table></figure>
+
+<h3 id="1-5-3-生成并自定义-hosts-文件"><a href="#1-5-3-生成并自定义-hosts-文件" class="headerlink" title="1.5.3 生成并自定义 hosts 文件"></a>1.5.3 生成并自定义 hosts 文件</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">root@k8s-ha2-deploy-239:~<span class="comment"># cd /etc/kubeasz/ </span></span><br><span class="line">root@k8s-ha2-deploy-239:/etc/kubeasz<span class="comment"># ./ezctl new k8s-cluster1   # 新建一个容器</span></span><br><span class="line">2024-01-02 14:05:59 DEBUG generate custom cluster files <span class="keyword">in</span> /etc/kubeasz/clusters/k8s-cluster1</span><br><span class="line">2024-01-02 14:05:59 DEBUG <span class="built_in">set</span> versions</span><br><span class="line">2024-01-02 14:05:59 DEBUG cluster k8s-cluster1: files successfully created.</span><br><span class="line">2024-01-02 14:05:59 INFO next steps 1: to config <span class="string">&#x27;/etc/kubeasz/clusters/k8s-cluster1/hosts&#x27;</span></span><br><span class="line">2024-01-02 14:05:59 INFO next steps 2: to config <span class="string">&#x27;/etc/kubeasz/clusters/k8s-cluster1/config.yml&#x27;</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="1-5-3-1-编辑生成的-Ansible-hosts-文件"><a href="#1-5-3-1-编辑生成的-Ansible-hosts-文件" class="headerlink" title="1.5.3.1 编辑生成的 Ansible hosts 文件"></a>1.5.3.1 编辑生成的 Ansible hosts 文件</h4><p>指定 etcd 节点、Master节点、node节点、VIP、运行时、网络组件类型、Service IP 与 pod IP 范围等配置信息。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br></pre></td><td class="code"><pre><span class="line">root@k8s-ha2-deploy-239:/etc/kubeasz<span class="comment"># vim clusters/k8s-cluster1/hosts</span></span><br><span class="line">root@k8s-ha2-deploy-239:/etc/kubeasz<span class="comment"># cat clusters/k8s-cluster1/hosts</span></span><br><span class="line"><span class="comment"># &#x27;etcd&#x27; cluster should have odd member(s) (1,3,5,...)</span></span><br><span class="line">[etcd]</span><br><span class="line">10.243.20.235</span><br><span class="line">10.243.20.236</span><br><span class="line">10.243.20.237</span><br><span class="line"></span><br><span class="line"><span class="comment"># master node(s), set unique &#x27;k8s_nodename&#x27; for each node</span></span><br><span class="line"><span class="comment"># CAUTION: &#x27;k8s_nodename&#x27; must consist of lower case alphanumeric characters, &#x27;-&#x27; or &#x27;.&#x27;,</span></span><br><span class="line"><span class="comment"># and must start and end with an alphanumeric character</span></span><br><span class="line">[kube_master]</span><br><span class="line">10.243.20.230 k8s_nodename=<span class="string">&#x27;10.243.20.230&#x27;</span></span><br><span class="line">10.243.20.231 k8s_nodename=<span class="string">&#x27;10.243.20.231&#x27;</span></span><br><span class="line">10.243.20.232 k8s_nodename=<span class="string">&#x27;10.243.20.232&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># work node(s), set unique &#x27;k8s_nodename&#x27; for each node</span></span><br><span class="line"><span class="comment"># CAUTION: &#x27;k8s_nodename&#x27; must consist of lower case alphanumeric characters, &#x27;-&#x27; or &#x27;.&#x27;,</span></span><br><span class="line"><span class="comment"># and must start and end with an alphanumeric character</span></span><br><span class="line">[kube_node]</span><br><span class="line">10.243.20.240 k8s_nodename=<span class="string">&#x27;10.243.20.240&#x27;</span></span><br><span class="line">10.243.20.241 k8s_nodename=<span class="string">&#x27;10.243.20.241&#x27;</span></span><br><span class="line">10.243.20.242 k8s_nodename=<span class="string">&#x27;10.243.20.242&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># [optional] harbor server, a private docker registry</span></span><br><span class="line"><span class="comment"># &#x27;NEW_INSTALL&#x27;: &#x27;true&#x27; to install a harbor server; &#x27;false&#x27; to integrate with existed one</span></span><br><span class="line">[harbor]</span><br><span class="line"><span class="comment">#192.168.1.8 NEW_INSTALL=false</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># [optional] loadbalance for accessing k8s from outside</span></span><br><span class="line">[ex_lb]</span><br><span class="line"><span class="comment">#192.168.1.6 LB_ROLE=backup EX_APISERVER_VIP=192.168.1.250 EX_APISERVER_PORT=8443</span></span><br><span class="line"><span class="comment">#192.168.1.7 LB_ROLE=master EX_APISERVER_VIP=192.168.1.250 EX_APISERVER_PORT=8443</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># [optional] ntp server for the cluster</span></span><br><span class="line">[chrony]</span><br><span class="line"><span class="comment">#192.168.1.1</span></span><br><span class="line"></span><br><span class="line">[all:vars]</span><br><span class="line"><span class="comment"># --------- Main Variables ---------------</span></span><br><span class="line"><span class="comment"># Secure port for apiservers</span></span><br><span class="line">SECURE_PORT=<span class="string">&quot;6443&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># Cluster container-runtime supported: docker, containerd</span></span><br><span class="line"><span class="comment"># if k8s version &gt;= 1.24, docker is not supported</span></span><br><span class="line">CONTAINER_RUNTIME=<span class="string">&quot;containerd&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># Network plugins supported: calico, flannel, kube-router, cilium, kube-ovn</span></span><br><span class="line">CLUSTER_NETWORK=<span class="string">&quot;calico&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># Service proxy mode of kube-proxy: &#x27;iptables&#x27; or &#x27;ipvs&#x27;</span></span><br><span class="line">PROXY_MODE=<span class="string">&quot;ipvs&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># K8S Service CIDR, not overlap with node(host) networking</span></span><br><span class="line">SERVICE_CIDR=<span class="string">&quot;10.100.0.0/16&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># Cluster CIDR (Pod CIDR), not overlap with node(host) networking</span></span><br><span class="line">CLUSTER_CIDR=<span class="string">&quot;10.200.0.0/16&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># NodePort Range</span></span><br><span class="line">NODE_PORT_RANGE=<span class="string">&quot;30000-32767&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># Cluster DNS Domain</span></span><br><span class="line">CLUSTER_DNS_DOMAIN=<span class="string">&quot;cluster.local&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># -------- Additional Variables (don&#x27;t change the default value right now) ---</span></span><br><span class="line"><span class="comment"># Binaries Directory</span></span><br><span class="line">bin_dir=<span class="string">&quot;/usr/local/bin&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># Deploy Directory (kubeasz workspace)</span></span><br><span class="line">base_dir=<span class="string">&quot;/etc/kubeasz&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># Directory for a specific cluster</span></span><br><span class="line">cluster_dir=<span class="string">&quot;&#123;&#123; base_dir &#125;&#125;/clusters/k8s-cluster1&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># CA and other components cert/key Directory</span></span><br><span class="line">ca_dir=<span class="string">&quot;/etc/kubernetes/ssl&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># Default &#x27;k8s_nodename&#x27; is empty</span></span><br><span class="line">k8s_nodename=<span class="string">&#x27;&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># Default python interpreter</span></span><br><span class="line">ansible_python_interpreter=/usr/bin/python3</span><br></pre></td></tr></table></figure>
+
+<h4 id="1-5-3-2-编辑集群-config-yml-文件"><a href="#1-5-3-2-编辑集群-config-yml-文件" class="headerlink" title="1.5.3.2 编辑集群 config.yml 文件"></a>1.5.3.2 编辑集群 config.yml 文件</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">root@k8s-ha2-deploy-239:/etc/kubeasz<span class="comment"># vim clusters/k8s-cluster1/config.yml</span></span><br></pre></td></tr></table></figure>
+
+<p>![image-20240102160403619](D:\Documents\TyporaPicture\基于 kubeasz 部署高可用 kubernetes\image-20240102160403619.png)</p>
+<p>![image-20240102160709935](D:\Documents\TyporaPicture\基于 kubeasz 部署高可用 kubernetes\image-20240102160709935.png)</p>
+<h3 id="1-5-4-部署-k8s-集群"><a href="#1-5-4-部署-k8s-集群" class="headerlink" title="1.5.4 部署 k8s 集群"></a>1.5.4 部署 k8s 集群</h3><h4 id="1-5-4-1-环境初始化"><a href="#1-5-4-1-环境初始化" class="headerlink" title="1.5.4.1 环境初始化"></a>1.5.4.1 环境初始化</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">root@k8s-ha2-deploy-239:/etc/kubeasz<span class="comment"># ./ezctl setup k8s-cluster1 01</span></span><br></pre></td></tr></table></figure>
+
+<p>![image-20240102170520512](D:\Documents\TyporaPicture\基于 kubeasz 部署高可用 kubernetes\image-20240102170520512.png)</p>
+<p>![image-20240102170043579](D:\Documents\TyporaPicture\基于 kubeasz 部署高可用 kubernetes\image-20240102170043579.png)</p>
+<blockquote>
+<p>命令使用帮助<br>root@k8s-ha2-deploy-239:&#x2F;etc&#x2F;kubeasz# .&#x2F;ezctl –help</p>
+<p>root@k8s-ha2-deploy-239:&#x2F;etc&#x2F;kubeasz# .&#x2F;ezctl setup –help<br>Usage: ezctl setup <cluster> <step><br>available steps:<br>    01  prepare            to prepare CA&#x2F;certs &amp; kubeconfig &amp; other system settings<br>    02  etcd               to setup the etcd cluster<br>    03  container-runtime  to setup the container runtime(docker or containerd)<br>    04  kube-master        to setup the master nodes<br>    05  kube-node          to setup the worker nodes<br>    06  network            to setup the network plugin<br>    07  cluster-addon      to setup other useful plugins<br>    90  all                to run 01~07 all at once<br>    10  ex-lb              to install external loadbalance for accessing k8s from outside<br>    11  harbor             to install a new harbor server or to integrate with an existed one</p>
+<p>examples: .&#x2F;ezctl setup test-k8s 01  (or .&#x2F;ezctl setup test-k8s prepare)<br>      .&#x2F;ezctl setup test-k8s 02  (or .&#x2F;ezctl setup test-k8s etcd)<br>          .&#x2F;ezctl setup test-k8s all<br>          .&#x2F;ezctl setup test-k8s 04 -t restart_master</p>
+</blockquote>
+<h4 id="1-5-4-2-部署-etcd-集群"><a href="#1-5-4-2-部署-etcd-集群" class="headerlink" title="1.5.4.2 部署 etcd 集群"></a>1.5.4.2 部署 etcd 集群</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">root@k8s-ha2-deploy-239:/etc/kubeasz<span class="comment"># ./ezctl setup k8s-cluster1 02</span></span><br></pre></td></tr></table></figure>
+
+<p>![image-20240103110940287](D:\Documents\TyporaPicture\基于 kubeasz 部署高可用 kubernetes\image-20240103110940287.png)</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 在其中一个 etcd 服务器验证集群状态</span></span><br><span class="line">root@k8s-etcd1-235:~<span class="comment"># export NODE_IPS=&quot;10.243.20.235 10.243.20.236 10.243.20.237&quot;</span></span><br><span class="line">root@k8s-etcd1-235:~<span class="comment"># for IP in $&#123;NODE_IPS&#125;;do ETCDCTL_API=3 /usr/local/bin/etcdctl --endpoints=https://$&#123;IP&#125;:2379 --cacert=/etc/kubernetes/ssl/ca.pem --cert=/etc/kubernetes/ssl/etcd.pem --key=/etc/kubernetes/ssl/etcd-key.pem endpoint health;done</span></span><br><span class="line">https://10.243.20.235:2379 is healthy: successfully committed proposal: took = 11.440413ms</span><br><span class="line">https://10.243.20.236:2379 is healthy: successfully committed proposal: took = 11.130143ms</span><br><span class="line">https://10.243.20.237:2379 is healthy: successfully committed proposal: took = 12.942469ms</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>etcd 服务安装完成后，会监听在 2379 和 2380 两个端口<br>2379 是 客户端通信使用<br>2380 是 etcd 集群之间通信使用</p>
+</blockquote>
+<h4 id="1-5-4-3-部署容器运行时-containerd"><a href="#1-5-4-3-部署容器运行时-containerd" class="headerlink" title="1.5.4.3 部署容器运行时 containerd"></a>1.5.4.3 部署容器运行时 containerd</h4><p>（1）验证基础容器镜像</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">root@k8s-ha2-deploy-239:/etc/kubeasz<span class="comment"># grep SANDBOX_IMAGE ./clusters/* -R</span></span><br><span class="line">./clusters/k8s-cluster1/config.yml:SANDBOX_IMAGE: <span class="string">&quot;easzlab.io.local:5000/easzlab/pause:3.9&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 如果修改了基础容器镜像的位置，需要在配置文件中修改</span></span><br><span class="line">root@k8s-ha2-deploy-239:/etc/kubeasz<span class="comment"># vim ./clusters/k8s-cluster1/config.yml</span></span><br><span class="line"><span class="comment"># [containerd]基础容器镜像</span></span><br><span class="line">SANDBOX_IMAGE: <span class="string">&quot;easzlab.io.local:5000/easzlab/pause:3.9&quot;</span></span><br></pre></td></tr></table></figure>
+
+<p>（2）配置本地域名仓库解析，如果配置了 DNS 服务器，可不用配置</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">root@k8s-ha2-deploy-239:/etc/kubeasz<span class="comment"># vim roles/containerd/tasks/main.yml</span></span><br><span class="line">- block:</span><br><span class="line">    - name: DNS harbor1 resolved</span><br><span class="line">      shell: <span class="string">&quot;echo &#x27;10.243.20.233 harbor.wuhaolam.top&#x27; &gt;&gt; /etc/hosts&quot;</span></span><br><span class="line"></span><br><span class="line">    - name: DNS harbor2 resolved</span><br><span class="line">      shell: <span class="string">&quot;echo &#x27;10.243.20.234 harbor2.wuhaolam.top&#x27; &gt;&gt; /etc/hosts&quot;</span></span><br></pre></td></tr></table></figure>
+
+<p>（3）配置 nerdctl 客户端</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">root@k8s-ha2-deploy-239:~<span class="comment"># ls nerdctl-1.4.0-linux-amd64.tar.gz </span></span><br><span class="line">nerdctl-1.4.0-linux-amd64.tar.gz</span><br><span class="line">root@k8s-ha2-deploy-239:/etc/kubeasz<span class="comment"># tar xvf /root/nerdctl-1.4.0-linux-amd64.tar.gz -C /etc/kubeasz/bin/containerd-bin/</span></span><br><span class="line">root@k8s-ha2-deploy-239:/etc/kubeasz<span class="comment"># cat roles/containerd/templates/nerdctl.toml.j2 </span></span><br><span class="line">namespace = <span class="string">&quot;k8s.io&quot;</span></span><br><span class="line">debug = <span class="literal">false</span></span><br><span class="line">debug_full = <span class="literal">false</span></span><br><span class="line">insecure_registry = <span class="literal">true</span></span><br><span class="line">root@k8s-ha2-deploy-239:/etc/kubeasz<span class="comment"># vim roles/containerd/tasks/main.yml</span></span><br></pre></td></tr></table></figure>
+
+<img src="D:\Documents\TyporaPicture\基于 kubeasz 部署高可用 kubernetes\image-20240104135838145.png" alt="image-20240104135838145" style="zoom:80%;" />
+
+<img src="D:\Documents\TyporaPicture\基于 kubeasz 部署高可用 kubernetes\image-20240104140043957.png" alt="image-20240104140043957"  />
+
+<blockquote>
+<p>nerdctl 软件包下载<br><a target="_blank" rel="noopener external nofollow noreferrer" href="https://github.com/containerd/nerdctl/releases">https://github.com/containerd/nerdctl/releases</a></p>
+</blockquote>
+<p>（4）开始部署运行时</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">root@k8s-ha2-deploy-239:/etc/kubeasz<span class="comment"># ./ezctl setup k8s-cluster1 03</span></span><br></pre></td></tr></table></figure>
+
+<p>![image-20240104141049176](D:\Documents\TyporaPicture\基于 kubeasz 部署高可用 kubernetes\image-20240104141049176.png)</p>
+<p>（5）验证 containerd 服务</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">root@k8s-master1-230:~<span class="comment"># ln -sv /usr/local/bin/containerd-bin/* /usr/local/bin/</span></span><br><span class="line">root@k8s-master1-230:~<span class="comment"># nerdctl -v</span></span><br><span class="line">nerdctl version 1.4.0</span><br><span class="line">root@k8s-master1-230:~<span class="comment"># containerd -v</span></span><br><span class="line">containerd github.com/containerd/containerd v1.6.20 2806fc1057397dbaeefbea0e4e17bddfbd388f38</span><br><span class="line"></span><br><span class="line">root@k8s-node1-240:~<span class="comment"># nerdctl login harbor.wuhaolam.top</span></span><br><span class="line">Enter Username: admin</span><br><span class="line">Enter Password: </span><br><span class="line">WARN[0003] skipping verifying HTTPS certs <span class="keyword">for</span> <span class="string">&quot;harbor.wuhaolam.top&quot;</span> </span><br><span class="line">WARNING: Your password will be stored unencrypted <span class="keyword">in</span> /root/.docker/config.json.</span><br><span class="line">Configure a credential helper to remove this warning. See</span><br><span class="line">https://docs.docker.com/engine/reference/commandline/login/<span class="comment">#credentials-store</span></span><br><span class="line"></span><br><span class="line">Login Succeeded</span><br></pre></td></tr></table></figure>
+
+<h4 id="1-5-4-4-部署-k8s-Master-节点"><a href="#1-5-4-4-部署-k8s-Master-节点" class="headerlink" title="1.5.4.4 部署 k8s Master 节点"></a>1.5.4.4 部署 k8s Master 节点</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">root@k8s-ha2-deploy-239:/etc/kubeasz<span class="comment"># ./ezctl setup k8s-cluster1 04</span></span><br></pre></td></tr></table></figure>
+
+<p>![image-20240104143611299](D:\Documents\TyporaPicture\基于 kubeasz 部署高可用 kubernetes\image-20240104143611299.png)</p>
+<h4 id="1-5-4-5-部署-k8s-node-节点"><a href="#1-5-4-5-部署-k8s-node-节点" class="headerlink" title="1.5.4.5 部署 k8s node 节点"></a>1.5.4.5 部署 k8s node 节点</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">root@k8s-ha2-deploy-239:/etc/kubeasz<span class="comment"># ./ezctl setup k8s-cluster1 05</span></span><br></pre></td></tr></table></figure>
+
+<p>![image-20240104144202040](D:\Documents\TyporaPicture\基于 kubeasz 部署高可用 kubernetes\image-20240104144202040.png)</p>
+<h4 id="1-5-4-6-部署网络服务组件-calico（手动部署）"><a href="#1-5-4-6-部署网络服务组件-calico（手动部署）" class="headerlink" title="1.5.4.6 部署网络服务组件 calico（手动部署）"></a>1.5.4.6 部署网络服务组件 calico（手动部署）</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 准备calico部署文件</span></span><br><span class="line">root@k8s-ha2-deploy-239:~<span class="comment"># ls</span></span><br><span class="line">calico3.26.1-ipip_ubuntu2204-k8s-1.27.x.yaml</span><br><span class="line"></span><br><span class="line"><span class="comment"># 注意 calico 的yaml 文件中，网卡名称是否与宿主机网卡名相同和 pod 子网范围是否与 hosts 文件中相同</span></span><br></pre></td></tr></table></figure>
+
+<p>![image-20230810203519016](D:\Documents\TyporaPicture\基于 kubeasz 部署高可用 kubernetes\image-20230810203519016.png)</p>
+<img src="D:\Documents\TyporaPicture\基于 kubeasz 部署高可用 kubernetes\image-20230810203754510.png" alt="image-20230810203754510" style="zoom:80%;" />
+
+<blockquote>
+<p>calico 的 yaml 文件<br><a target="_blank" rel="noopener external nofollow noreferrer" href="http://file.wuhaolam.top/calico3.26.1-ipip_ubuntu2204-k8s-1.27.x.yaml?e=1691668755&token=miUmOnzUyd6iPZJ_Mb0lwezwsmi9rGBR-TEVXr1z:hfGQt3MFblFwXRJOTBZIQ5GhzG0=">http://file.wuhaolam.top/calico3.26.1-ipip_ubuntu2204-k8s-1.27.x.yaml?e=1691668755&amp;token=miUmOnzUyd6iPZJ_Mb0lwezwsmi9rGBR-TEVXr1z:hfGQt3MFblFwXRJOTBZIQ5GhzG0=</a></p>
+</blockquote>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 部署calico</span></span><br><span class="line">root@k8s-ha2-deploy-239:~<span class="comment"># kubectl apply -f calico3.26.1-ipip_ubuntu2204-k8s-1.27.x.yaml </span></span><br><span class="line">root@k8s-ha2-deploy-239:/etc/kubeasz<span class="comment"># kubectl get pod -A</span></span><br><span class="line">NAMESPACE     NAME                                      READY   STATUS    RESTARTS      AGE</span><br><span class="line">kube-system   calico-kube-controllers-6655b6c4b-dsj4f   1/1     Running   1 (11m ago)   13m</span><br><span class="line">kube-system   calico-node-4vzkg                         1/1     Running   0             13m</span><br><span class="line">kube-system   calico-node-gc754                         1/1     Running   0             13m</span><br><span class="line">kube-system   calico-node-llm5n                         1/1     Running   0             13m</span><br><span class="line">kube-system   calico-node-w2k8c                         1/1     Running   0             13m</span><br><span class="line">kube-system   calico-node-wczv2                         1/1     Running   0             13m</span><br><span class="line">kube-system   calico-node-xlts7                         1/1     Running   0             13m</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># node 节点验证</span></span><br><span class="line">root@k8s-ha2-deploy-239:/etc/kubeasz<span class="comment"># scp ./bin/calicoctl root@10.243.20.240:/usr/local/bin/</span></span><br><span class="line"><span class="comment"># 查看node1节点的calico邻居状态</span></span><br><span class="line">root@k8s-node1-240:~<span class="comment"># calicoctl node status</span></span><br><span class="line">Calico process is running.</span><br><span class="line"></span><br><span class="line">IPv4 BGP status</span><br><span class="line">+---------------+-------------------+-------+----------+-------------+</span><br><span class="line">| PEER ADDRESS  |     PEER TYPE     | STATE |  SINCE   |    INFO     |</span><br><span class="line">+---------------+-------------------+-------+----------+-------------+</span><br><span class="line">| 10.243.20.232 | node-to-node mesh | up    | 07:40:00 | Established |</span><br><span class="line">| 10.243.20.241 | node-to-node mesh | up    | 07:39:59 | Established |</span><br><span class="line">| 10.243.20.242 | node-to-node mesh | up    | 07:39:59 | Established |</span><br><span class="line">| 10.243.20.231 | node-to-node mesh | up    | 07:40:22 | Established |</span><br><span class="line">| 10.243.20.230 | node-to-node mesh | up    | 07:40:25 | Established |</span><br><span class="line">+---------------+-------------------+-------+----------+-------------+</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h2 id="1-6-部署-k8s-内部-DNS-服务-CoreDNS"><a href="#1-6-部署-k8s-内部-DNS-服务-CoreDNS" class="headerlink" title="1.6 部署 k8s 内部 DNS 服务-CoreDNS"></a>1.6 部署 k8s 内部 DNS 服务-CoreDNS</h2><p>CoreDNS 官网：<code>https://coredns.io/</code><br>部署清单文件：<code>https://github.com/coredns/deployment/tree/master/kubernetes</code></p>
+<blockquote>
+<p>CoreDNS 源文件来自于 k8s 源码文件中 kubernetes-1.27.9\cluster\addons\dns\coredns<br><a target="_blank" rel="noopener external nofollow noreferrer" href="https://github.com/kubernetes/kubernetes/archive/refs/tags/v1.27.9.zip">https://github.com/kubernetes/kubernetes/archive/refs/tags/v1.27.9.zip</a></p>
+</blockquote>
+<h3 id="1-6-1-修改-CoreDNS-的-yaml-文件"><a href="#1-6-1-修改-CoreDNS-的-yaml-文件" class="headerlink" title="1.6.1 修改 CoreDNS 的 yaml 文件"></a>1.6.1 修改 CoreDNS 的 yaml 文件</h3><p>（1）修改域名解析相关配置</p>
+<p>![image-20240108151730383](D:\Documents\TyporaPicture\基于 kubeasz 部署高可用 kubernetes\image-20240108151730383.png)</p>
+<p>（2）指定CoreDNS的镜像地址以及资源限制（生产时资源建议调大）</p>
+<img src="D:\Documents\TyporaPicture\基于 kubeasz 部署高可用 kubernetes\image-20240108152909521.png" alt="image-20240108152909521"  />
+
+<p>（3）修改集群的 DNS 地址</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 修改的地址需要与 pod 中域名地址相同</span></span><br><span class="line">root@k8s-ha2-deploy-239:/etc/kubeasz<span class="comment"># kubectl run net-test1 --image=alpine sleep 36000</span></span><br><span class="line">root@k8s-ha2-deploy-239:/etc/kubeasz<span class="comment"># kubectl get pod</span></span><br><span class="line">NAME        READY   STATUS    RESTARTS   AGE</span><br><span class="line">net-test1   1/1     Running   0          18s</span><br><span class="line">root@k8s-ha2-deploy-239:/etc/kubeasz<span class="comment"># kubectl exec -it net-test1 sh</span></span><br><span class="line">kubectl <span class="built_in">exec</span> [POD] [COMMAND] is DEPRECATED and will be removed <span class="keyword">in</span> a future version. Use kubectl <span class="built_in">exec</span> [POD] -- [COMMAND] instead.</span><br><span class="line">/ <span class="comment"># cat /etc/resolv.conf </span></span><br><span class="line">search default.svc.cluster.local svc.cluster.local cluster.local</span><br><span class="line">nameserver 10.100.0.2</span><br><span class="line">options ndots:5</span><br></pre></td></tr></table></figure>
+
+<img src="D:\Documents\TyporaPicture\基于 kubeasz 部署高可用 kubernetes\image-20240108155322955.png" alt="image-20240108155322955" style="zoom:80%;" />
+
+<h3 id="1-6-2-部署-CoreDNS-服务"><a href="#1-6-2-部署-CoreDNS-服务" class="headerlink" title="1.6.2 部署 CoreDNS 服务"></a>1.6.2 部署 CoreDNS 服务</h3><p>（1）开始部署</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">root@k8s-ha2-deploy-239:~<span class="comment"># kubectl apply -f coredns-v1.10.1.yaml </span></span><br><span class="line">serviceaccount/coredns created</span><br><span class="line">clusterrole.rbac.authorization.k8s.io/system:coredns created</span><br><span class="line">clusterrolebinding.rbac.authorization.k8s.io/system:coredns created</span><br><span class="line">configmap/coredns created</span><br><span class="line">deployment.apps/coredns created</span><br><span class="line">service/kube-dns created</span><br><span class="line"></span><br><span class="line"><span class="comment"># 如果遇到错误则需要重新分发</span></span><br><span class="line">kubectl delete -f coredns-v1.10.1.yaml</span><br><span class="line">kubectl apply -f coredns-v1.10.1.yaml</span><br></pre></td></tr></table></figure>
+
+<p>（2）测试域名解析服务</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">root@k8s-ha2-deploy-239:/etc/kubeasz<span class="comment"># kubectl exec -it net-test1 sh</span></span><br><span class="line">kubectl <span class="built_in">exec</span> [POD] [COMMAND] is DEPRECATED and will be removed <span class="keyword">in</span> a future version. Use kubectl <span class="built_in">exec</span> [POD] -- [COMMAND] instead.</span><br><span class="line">/ <span class="comment"># ping www.baidu.com</span></span><br><span class="line">PING www.baidu.com (183.2.172.42): 56 data bytes</span><br><span class="line">64 bytes from 183.2.172.42: <span class="built_in">seq</span>=0 ttl=48 time=23.531 ms</span><br><span class="line">64 bytes from 183.2.172.42: <span class="built_in">seq</span>=1 ttl=48 time=23.447 ms</span><br><span class="line">^C</span><br><span class="line">--- www.baidu.com ping statistics ---</span><br><span class="line">2 packets transmitted, 2 packets received, 0% packet loss</span><br><span class="line">round-trip min/avg/max = 23.447/23.489/23.531 ms</span><br><span class="line">/ <span class="comment"># ping 223.6.6.6 -c 3</span></span><br><span class="line">PING 223.6.6.6 (223.6.6.6): 56 data bytes</span><br><span class="line">64 bytes from 223.6.6.6: <span class="built_in">seq</span>=0 ttl=112 time=10.705 ms</span><br><span class="line">64 bytes from 223.6.6.6: <span class="built_in">seq</span>=1 ttl=112 time=10.654 ms</span><br><span class="line">64 bytes from 223.6.6.6: <span class="built_in">seq</span>=2 ttl=112 time=10.591 ms</span><br><span class="line"></span><br><span class="line">--- 223.6.6.6 ping statistics ---</span><br><span class="line">3 packets transmitted, 3 packets received, 0% packet loss</span><br><span class="line">round-trip min/avg/max = 10.591/10.650/10.705 ms</span><br></pre></td></tr></table></figure></article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="https://wuhaolam.github.io">Wu Hao</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="https://wuhaolam.github.io/archives/f0df75e4.html">https://wuhaolam.github.io/archives/f0df75e4.html</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="external nofollow noreferrer" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="https://wuhaolam.github.io" target="_blank">穿着草鞋前往</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/Kubernetes/">Kubernetes</a></div><div class="post_share"><div class="social-share" data-image="https://cdn.jsdelivr.net/gh/wuhaolam/picgo_demo/img/kubeasz.png" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/archives/9daba997.html" title="测试"><div class="cover" style="background: var(--default-bg-color)"></div><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">测试</div></div></a></div><div class="next-post pull-right"><a href="/archives/f5066d4c.html" title="基于 centos 构建 Tomcat 的业务镜像"><div class="cover" style="background: var(--default-bg-color)"></div><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">基于 centos 构建 Tomcat 的业务镜像</div></div></a></div></nav><hr/><div id="post-comment"><div class="comment-head"><div class="comment-headline"><i class="fas fa-comments fa-fw"></i><span> 评论</span></div></div><div class="comment-wrap"><div><div id="lv-container" data-id="city" data-uid="MTAyMC81NzA1My8zMzUxNw=="></div></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="https://cdn.jsdelivr.net/gh/wuhaolam/picgo_demo/img/%E5%A4%B4%E5%83%8F.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">Wu Hao</div><div class="author-info__description">欢迎来到吴浩的博客！</div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">31</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">9</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">8</div></a></div><a id="card-info-btn" target="_blank" rel="noopener external nofollow noreferrer" href="https://github.com/xxxxxx"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons is-center"><a class="social-icon" href="https://github.com/wuhaolam/" rel="external nofollow noreferrer" target="_blank" title="Github"><i class="fab fa-github"></i></a><a class="social-icon" href="mailto:wuhaolam@foxmail.com" rel="external nofollow noreferrer" target="_blank" title="Email"><i class="fas fa-envelope"></i></a><a class="social-icon" href="https://weibo.com/u/6551419807" rel="external nofollow noreferrer" target="_blank" title="微博"><i class="fa-brands fa-weibo"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">个人博客，仅供参考学习。</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%B8%80%E3%80%81kubeasz-%E9%83%A8%E7%BD%B2%E9%AB%98%E5%8F%AF%E7%94%A8-k8s-%E9%9B%86%E7%BE%A4"><span class="toc-text">一、kubeasz 部署高可用 k8s 集群</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-1-k8s-%E9%9B%86%E7%BE%A4%E4%BF%A1%E6%81%AF"><span class="toc-text">1.1 k8s 集群信息</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#1-2-k8s-%E9%9B%86%E7%BE%A4%E7%8E%AF%E5%A2%83%E5%87%86%E5%A4%87"><span class="toc-text">1.2 k8s 集群环境准备</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-2-1-%E8%BD%AF%E4%BB%B6%E6%B8%85%E5%8D%95"><span class="toc-text">1.2.1 软件清单</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-2-2-%E7%9B%B8%E5%85%B3%E5%8F%82%E6%95%B0%E5%88%9D%E5%A7%8B%E5%8C%96"><span class="toc-text">1.2.2 相关参数初始化</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#1-3-%E8%B4%9F%E8%BD%BD%E5%9D%87%E8%A1%A1%E9%85%8D%E7%BD%AE"><span class="toc-text">1.3 负载均衡配置</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-3-1-%E9%83%A8%E7%BD%B2-keepalived"><span class="toc-text">1.3.1 部署 keepalived</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-3-2-%E9%83%A8%E7%BD%B2-HAproxy"><span class="toc-text">1.3.2 部署 HAproxy</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#1-4-%E9%83%A8%E7%BD%B2-Harbor"><span class="toc-text">1.4 部署 Harbor</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-4-1-%E9%83%A8%E7%BD%B2%E5%9F%BA%E4%BA%8E-https-%E7%9A%84-Harbor-%E6%9C%8D%E5%8A%A1"><span class="toc-text">1.4.1 部署基于 https 的 Harbor 服务</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BD%BF%E7%94%A8NGINX%E5%81%9A%E5%8F%8D%E5%90%91%E4%BB%A3%E7%90%86%E8%B4%9F%E8%BD%BD%E5%9D%87%E8%A1%A1%E7%AE%80%E8%A6%81%E9%85%8D%E7%BD%AE"><span class="toc-text">使用NGINX做反向代理负载均衡简要配置</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-4-2-%E9%85%8D%E7%BD%AE-Harbor-%E4%B9%8B%E9%97%B4%E7%9A%84%E9%95%9C%E5%83%8F%E5%A4%8D%E5%88%B6"><span class="toc-text">1.4.2 配置 Harbor 之间的镜像复制</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#1-5-kubeasz-%E9%83%A8%E7%BD%B2%E9%AB%98%E5%8F%AF%E7%94%A8-kubernets"><span class="toc-text">1.5 kubeasz 部署高可用 kubernets</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-5-1-%E5%9C%A8%E9%83%A8%E7%BD%B2%E8%8A%82%E7%82%B9%E4%B8%8A%E9%85%8D%E7%BD%AEAnsible%E5%85%8D%E5%AF%86%E7%99%BB%E5%BD%95%E8%87%B3master%E3%80%81node%E3%80%81etcd%E8%8A%82%E7%82%B9"><span class="toc-text">1.5.1 在部署节点上配置Ansible免密登录至master、node、etcd节点</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-5-2-%E5%9C%A8%E9%83%A8%E7%BD%B2%E8%8A%82%E7%82%B9%E4%B8%8B%E8%BD%BD-kubeasz-%E9%A1%B9%E7%9B%AE%E5%8F%8A%E5%85%B6%E7%BB%84%E4%BB%B6"><span class="toc-text">1.5.2 在部署节点下载 kubeasz 项目及其组件</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-5-3-%E7%94%9F%E6%88%90%E5%B9%B6%E8%87%AA%E5%AE%9A%E4%B9%89-hosts-%E6%96%87%E4%BB%B6"><span class="toc-text">1.5.3 生成并自定义 hosts 文件</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-5-3-1-%E7%BC%96%E8%BE%91%E7%94%9F%E6%88%90%E7%9A%84-Ansible-hosts-%E6%96%87%E4%BB%B6"><span class="toc-text">1.5.3.1 编辑生成的 Ansible hosts 文件</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#1-5-3-2-%E7%BC%96%E8%BE%91%E9%9B%86%E7%BE%A4-config-yml-%E6%96%87%E4%BB%B6"><span class="toc-text">1.5.3.2 编辑集群 config.yml 文件</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-5-4-%E9%83%A8%E7%BD%B2-k8s-%E9%9B%86%E7%BE%A4"><span class="toc-text">1.5.4 部署 k8s 集群</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-5-4-1-%E7%8E%AF%E5%A2%83%E5%88%9D%E5%A7%8B%E5%8C%96"><span class="toc-text">1.5.4.1 环境初始化</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#1-5-4-2-%E9%83%A8%E7%BD%B2-etcd-%E9%9B%86%E7%BE%A4"><span class="toc-text">1.5.4.2 部署 etcd 集群</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#1-5-4-3-%E9%83%A8%E7%BD%B2%E5%AE%B9%E5%99%A8%E8%BF%90%E8%A1%8C%E6%97%B6-containerd"><span class="toc-text">1.5.4.3 部署容器运行时 containerd</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#1-5-4-4-%E9%83%A8%E7%BD%B2-k8s-Master-%E8%8A%82%E7%82%B9"><span class="toc-text">1.5.4.4 部署 k8s Master 节点</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#1-5-4-5-%E9%83%A8%E7%BD%B2-k8s-node-%E8%8A%82%E7%82%B9"><span class="toc-text">1.5.4.5 部署 k8s node 节点</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#1-5-4-6-%E9%83%A8%E7%BD%B2%E7%BD%91%E7%BB%9C%E6%9C%8D%E5%8A%A1%E7%BB%84%E4%BB%B6-calico%EF%BC%88%E6%89%8B%E5%8A%A8%E9%83%A8%E7%BD%B2%EF%BC%89"><span class="toc-text">1.5.4.6 部署网络服务组件 calico（手动部署）</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#1-6-%E9%83%A8%E7%BD%B2-k8s-%E5%86%85%E9%83%A8-DNS-%E6%9C%8D%E5%8A%A1-CoreDNS"><span class="toc-text">1.6 部署 k8s 内部 DNS 服务-CoreDNS</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-6-1-%E4%BF%AE%E6%94%B9-CoreDNS-%E7%9A%84-yaml-%E6%96%87%E4%BB%B6"><span class="toc-text">1.6.1 修改 CoreDNS 的 yaml 文件</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-6-2-%E9%83%A8%E7%BD%B2-CoreDNS-%E6%9C%8D%E5%8A%A1"><span class="toc-text">1.6.2 部署 CoreDNS 服务</span></a></li></ol></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/archives/9daba997.html" title="测试">测试</a><time datetime="2024-02-21T07:24:39.700Z" title="发表于 2024-02-21 15:24:39">2024-02-21</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/archives/f0df75e4.html" title="使用 kubeasz 部署高可用 k8s 集群"><img src="https://cdn.jsdelivr.net/gh/wuhaolam/picgo_demo/img/kubeasz.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="使用 kubeasz 部署高可用 k8s 集群"/></a><div class="content"><a class="title" href="/archives/f0df75e4.html" title="使用 kubeasz 部署高可用 k8s 集群">使用 kubeasz 部署高可用 k8s 集群</a><time datetime="2023-12-28T01:22:00.000Z" title="发表于 2023-12-28 09:22:00">2023-12-28</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/archives/f5066d4c.html" title="基于 centos 构建 Tomcat 的业务镜像">基于 centos 构建 Tomcat 的业务镜像</a><time datetime="2023-12-13T01:22:00.000Z" title="发表于 2023-12-13 09:22:00">2023-12-13</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/archives/d69bc2fb.html" title="基于 alpine 构建 nginx 的业务镜像">基于 alpine 构建 nginx 的业务镜像</a><time datetime="2023-12-08T01:22:00.000Z" title="发表于 2023-12-08 09:22:00">2023-12-08</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/archives/99c33715.html" title="二进制安装 docker22.04">二进制安装 docker22.04</a><time datetime="2023-12-06T01:22:00.000Z" title="发表于 2023-12-06 09:22:00">2023-12-06</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2022 - 2024 By Wu Hao</div><div class="footer_custom_text"><div><a onclick="window.open('https://beian.miit.gov.cn')">皖ICP备2023003329号</a></div></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><a id="to_comment" href="#post-comment" title="直达评论"><i class="fas fa-comments"></i></a><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><span id="loading-status"></span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="is-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  数据库加载中</span></div><div class="search-wrap"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜索文章" type="text"/></div></div><hr/><div id="local-search-results"></div></div></div><div id="search-mask"></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.umd.min.js"></script><script src="https://cdn.jsdelivr.net/npm/instant.page/instantpage.min.js" type="module"></script><script src="https://cdn.jsdelivr.net/npm/node-snackbar/dist/snackbar.min.js"></script><script>function panguFn () {
+  if (typeof pangu === 'object') pangu.autoSpacingPage()
+  else {
+    getScript('https://cdn.jsdelivr.net/npm/pangu/dist/browser/pangu.min.js')
+      .then(() => {
+        pangu.autoSpacingPage()
+      })
+  }
+}
+
+function panguInit () {
+  if (false){
+    GLOBAL_CONFIG_SITE.isPost && panguFn()
+  } else {
+    panguFn()
+  }
+}
+
+document.addEventListener('DOMContentLoaded', panguInit)</script><script src="/js/search/local-search.js"></script><div class="js-pjax"><script>function loadLivere () {
+  if (typeof LivereTower === 'object') {
+    window.LivereTower.init()
+  }
+  else {
+    (function(d, s) {
+        var j, e = d.getElementsByTagName(s)[0];
+        if (typeof LivereTower === 'function') { return; }
+        j = d.createElement(s);
+        j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+        j.async = true;
+        e.parentNode.insertBefore(j, e);
+    })(document, 'script');
+  }
+}
+
+if ('Livere' === 'Livere' || !false) {
+  if (false) btf.loadComment(document.getElementById('lv-container'), loadLivere)
+  else loadLivere()
+}
+else {
+  function loadOtherComment () {
+    loadLivere()
+  }
+}</script></div><script id="canvas_nest" defer="defer" color="0,0,255" opacity="0.7" zIndex="-1" count="99" mobile="false" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/canvas-nest.min.js"></script><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/activate-power-mode.min.js"></script><script>POWERMODE.colorful = true;
+POWERMODE.shake = true;
+POWERMODE.mobile = false;
+document.body.addEventListener('input', POWERMODE);
+</script><script src="https://cdn.jsdelivr.net/npm/pjax/pjax.min.js"></script><script>let pjaxSelectors = ["head > title","#config-diff","#body-wrap","#rightside-config-hide","#rightside-config-show",".js-pjax"]
+
+var pjax = new Pjax({
+  elements: 'a:not([target="_blank"])',
+  selectors: pjaxSelectors,
+  cacheBust: false,
+  analytics: false,
+  scrollRestoration: false
+})
+
+document.addEventListener('pjax:send', function () {
+
+  // removeEventListener scroll 
+  window.tocScrollFn && window.removeEventListener('scroll', window.tocScrollFn)
+  window.scrollCollect && window.removeEventListener('scroll', scrollCollect)
+
+  document.getElementById('rightside').style.cssText = "opacity: ''; transform: ''"
+  
+  if (window.aplayers) {
+    for (let i = 0; i < window.aplayers.length; i++) {
+      if (!window.aplayers[i].options.fixed) {
+        window.aplayers[i].destroy()
+      }
+    }
+  }
+
+  typeof typed === 'object' && typed.destroy()
+
+  //reset readmode
+  const $bodyClassList = document.body.classList
+  $bodyClassList.contains('read-mode') && $bodyClassList.remove('read-mode')
+
+  typeof disqusjs === 'object' && disqusjs.destroy()
+})
+
+document.addEventListener('pjax:complete', function () {
+  window.refreshFn()
+
+  document.querySelectorAll('script[data-pjax]').forEach(item => {
+    const newScript = document.createElement('script')
+    const content = item.text || item.textContent || item.innerHTML || ""
+    Array.from(item.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value))
+    newScript.appendChild(document.createTextNode(content))
+    item.parentNode.replaceChild(newScript, item)
+  })
+
+  GLOBAL_CONFIG.islazyload && window.lazyLoadInstance.update()
+
+  typeof chatBtnFn === 'function' && chatBtnFn()
+  typeof panguInit === 'function' && panguInit()
+
+  // google analytics
+  typeof gtag === 'function' && gtag('config', '', {'page_path': window.location.pathname});
+
+  // baidu analytics
+  typeof _hmt === 'object' && _hmt.push(['_trackPageview',window.location.pathname]);
+
+  typeof loadMeting === 'function' && document.getElementsByClassName('aplayer').length && loadMeting()
+
+  // prismjs
+  typeof Prism === 'object' && Prism.highlightAll()
+})
+
+document.addEventListener('pjax:error', (e) => {
+  if (e.request.status === 404) {
+    pjax.loadUrl('/404.html')
+  }
+})</script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
